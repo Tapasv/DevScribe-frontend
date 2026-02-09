@@ -111,7 +111,7 @@ function Header() {
 
             {/* Admin Link */}
             <a 
-              href="http://localhost:8000/admin" 
+              href="https://devscribe-backend-a4ot.onrender.com/admin"
               target="_blank" 
               rel="noopener noreferrer"
               className="bg-gray-600 hover:bg-gray-700 text-white font-medium px-4 py-2 rounded-lg transition flex items-center"
@@ -212,7 +212,7 @@ function Header() {
             {/* Admin Link for Mobile */}
             <hr className="my-2" />
             <a 
-              href="http://localhost:8000/admin" 
+              href="https://devscribe-backend-a4ot.onrender.com/admin" 
               target="_blank" 
               rel="noopener noreferrer"
               className="block py-2 text-gray-600 hover:text-gray-700 font-medium"

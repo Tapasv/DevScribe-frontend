@@ -4,7 +4,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Attach token
@@ -19,24 +21,58 @@ api.interceptors.response.use(
   (res) => res,
   async (err) => {
     const original = err.config;
+
     if (err.response?.status === 401 && !original._retry) {
       original._retry = true;
-      const refresh = localStorage.getItem('refresh_token');
+
       try {
+        const refresh = localStorage.getItem('refresh_token');
+
         const r = await axios.post(
           `${API_URL}/auth/token/refresh/`,
           { refresh }
         );
+
         localStorage.setItem('access_token', r.data.access);
         original.headers.Authorization = `Bearer ${r.data.access}`;
+
         return api(original);
       } catch {
         localStorage.clear();
         window.location.href = '/login';
       }
     }
+
     return Promise.reject(err);
   }
 );
+
+/* ================= EXPORTS ================= */
+
+// AUTH
+export const register = (data) => api.post('/auth/register/', data);
+export const login = (username, password) =>
+  api.post('/auth/login/', { username, password });
+export const logout = (refresh) =>
+  api.post('/auth/logout/', { refresh_token: refresh });
+
+// PROFILE
+export const getProfile = () => api.get('/profile/');
+export const updateProfile = (data) => api.put('/profile/', data);
+
+// POSTS
+export const getPosts = (params = {}) => api.get('/posts/', { params });
+export const getPost = (slug) => api.get(`/posts/${slug}/`);
+export const getFeaturedPosts = () => api.get('/posts/featured/');
+export const getPopularPosts = () => api.get('/posts/popular/');
+
+// CATEGORIES  🔥 THIS FIXES YOUR ERROR
+export const getCategories = () => api.get('/categories/');
+export const getCategory = (slug) => api.get(`/categories/${slug}/`);
+
+// COMMENTS
+export const getComments = (post) =>
+  api.get('/comments/', { params: { post } });
+export const createComment = (data) => api.post('/comments/', data);
 
 export default api;

@@ -22,9 +22,9 @@ function App() {
 
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="app">
         <Header />
-        <main className="flex-grow">
+        <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/post/:slug" element={<PostDetail />} />

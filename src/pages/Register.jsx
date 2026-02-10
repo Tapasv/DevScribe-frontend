@@ -33,160 +33,133 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
-              Sign in
-            </Link>
-          </p>
-        </div>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2 className="auth-title">Create Account</h2>
+        <p className="auth-subtitle">
+          Already have an account? <Link to="/login">Sign in</Link>
+        </p>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {errors.non_field_errors && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {errors.non_field_errors}
-            </div>
-          )}
+        {errors.non_field_errors && (
+          <div className="form-error">{errors.non_field_errors}</div>
+        )}
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name *
-                </label>
-                <input
-                  id="first_name"
-                  type="text"
-                  required
-                  className="input-field"
-                  value={formData.first_name}
-                  onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                />
-                {errors.first_name && <p className="text-red-600 text-sm mt-1">{errors.first_name}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name *
-                </label>
-                <input
-                  id="last_name"
-                  type="text"
-                  required
-                  className="input-field"
-                  value={formData.last_name}
-                  onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                />
-                {errors.last_name && <p className="text-red-600 text-sm mt-1">{errors.last_name}</p>}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username *
-              </label>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="first_name" className="form-label">First Name *</label>
               <input
-                id="username"
+                id="first_name"
                 type="text"
                 required
-                className="input-field"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="form-input"
+                value={formData.first_name}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
               />
-              {errors.username && <p className="text-red-600 text-sm mt-1">{errors.username}</p>}
+              {errors.first_name && <p className="form-error">{errors.first_name}</p>}
             </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
+            <div className="form-group">
+              <label htmlFor="last_name" className="form-label">Last Name *</label>
               <input
-                id="email"
-                type="email"
+                id="last_name"
+                type="text"
                 required
-                className="input-field"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="form-input"
+                value={formData.last_name}
+                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
               />
-              {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+              {errors.last_name && <p className="form-error">{errors.last_name}</p>}
             </div>
+          </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password *
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                className="input-field"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-              {errors.password && <p className="text-red-600 text-sm mt-1">{errors.password}</p>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">Username *</label>
+            <input
+              id="username"
+              type="text"
+              required
+              className="form-input"
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            />
+            {errors.username && <p className="form-error">{errors.username}</p>}
+          </div>
 
-            <div>
-              <label htmlFor="password2" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password *
-              </label>
-              <input
-                id="password2"
-                type="password"
-                required
-                className="input-field"
-                value={formData.password2}
-                onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
-              />
-              {errors.password2 && <p className="text-red-600 text-sm mt-1">{errors.password2}</p>}
-            </div>
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">Email *</label>
+            <input
+              id="email"
+              type="email"
+              required
+              className="form-input"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+            {errors.email && <p className="form-error">{errors.email}</p>}
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                I want to register as *
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="reader"
-                    checked={formData.role === 'reader'}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    Reader - I want to read and comment on posts
-                  </span>
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">Password *</label>
+            <input
+              id="password"
+              type="password"
+              required
+              className="form-input"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+            {errors.password && <p className="form-error">{errors.password}</p>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password2" className="form-label">Confirm Password *</label>
+            <input
+              id="password2"
+              type="password"
+              required
+              className="form-input"
+              value={formData.password2}
+              onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
+            />
+            {errors.password2 && <p className="form-error">{errors.password2}</p>}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">I want to register as *</label>
+            <div className="radio-group">
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="reader"
+                  name="role"
+                  value="reader"
+                  checked={formData.role === 'reader'}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                />
+                <label htmlFor="reader">
+                  <strong>Reader</strong>
+                  <span>I want to read and comment on posts</span>
                 </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="author"
-                    checked={formData.role === 'author'}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    Author - I want to publish my own posts
-                  </span>
+              </div>
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="author"
+                  name="role"
+                  value="author"
+                  checked={formData.role === 'author'}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                />
+                <label htmlFor="author">
+                  <strong>Author</strong>
+                  <span>I want to publish my own posts</span>
                 </label>
               </div>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full disabled:opacity-50"
-          >
+          <button type="submit" disabled={loading} className="btn btn-primary btn-block">
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>

@@ -28,12 +28,11 @@ function Home() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Featured Posts */}
+    <div className="container">
       {featuredPosts.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Featured Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="featured-section">
+          <h2 className="featured-title">Featured Posts</h2>
+          <div className="featured-grid">
             {featuredPosts.slice(0, 3).map(post => (
               <PostCard key={post.id} post={post} />
             ))}
@@ -41,22 +40,17 @@ function Home() {
         </section>
       )}
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Posts */}
-        <div className="lg:col-span-2">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Latest Posts</h2>
-          <div className="space-y-6">
+      <div className="sidebar-grid">
+        <div>
+          <h2 className="profile-section-title">Latest Posts</h2>
+          <div className="profile-posts">
             {posts.map(post => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div>
-          <Sidebar />
-        </div>
+        <Sidebar />
       </div>
     </div>
   );

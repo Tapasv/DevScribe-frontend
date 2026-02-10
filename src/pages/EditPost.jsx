@@ -30,7 +30,6 @@ function EditPost() {
       .then(([postRes, catRes]) => {
         const post = postRes.data;
         
-        // Check if user is the author
         if (post.author.id !== user?.id) {
           navigate('/');
           return;
@@ -45,7 +44,8 @@ function EditPost() {
           published: post.published,
         });
         setCurrentImage(post.image);
-        setCategories(catRes.data);
+        const data = catRes.data.results || catRes.data;
+        setCategories(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
@@ -84,73 +84,63 @@ function EditPost() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="container">
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="card p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Edit Post</h1>
+    <div className="create-post-container">
+      <div className="create-post-card">
+        <h1 className="create-post-title">Edit Post</h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
-          </div>
+          <div className="form-error">{error}</div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
-            </label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label className="form-label">Title *</label>
             <input
               type="text"
               required
-              className="input-field"
+              className="form-input"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Excerpt *
-            </label>
+          <div className="form-group">
+            <label className="form-label">Excerpt *</label>
             <textarea
               required
               rows="3"
-              className="input-field"
+              className="form-textarea"
               value={formData.excerpt}
               onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
               maxLength="300"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="char-count">
               {formData.excerpt.length}/300 characters
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Content *
-            </label>
+          <div className="form-group">
+            <label className="form-label">Content *</label>
             <textarea
               required
               rows="15"
-              className="input-field"
+              className="form-textarea"
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Category
-            </label>
+          <div className="form-group">
+            <label className="form-label">Category</label>
             <select
-              className="input-field"
+              className="form-select"
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
@@ -163,81 +153,56 @@ function EditPost() {
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Featured Image
-            </label>
+          <div className="form-group">
+            <label className="form-label">Featured Image</label>
             {currentImage && (
-              <div className="mb-2">
-                <img src={currentImage} alt="Current" className="w-48 h-32 object-cover rounded" />
-                <p className="text-sm text-gray-500 mt-1">Current image</p>
+              <div style={{marginBottom: '1rem'}}>
+                <img src={currentImage} alt="Current" style={{width: '200px', height: '120px', objectFit: 'cover', borderRadius: '4px'}} />
+                <p style={{fontSize: '0.85rem', color: 'var(--text-dim)', marginTop: '0.5rem'}}>Current image</p>
               </div>
             )}
             <input
               type="file"
               accept="image/*"
-              className="input-field"
+              className="form-input"
               onChange={handleFileChange}
             />
           </div>
 
-          <div className="flex items-center">
+          <div className="form-checkbox">
             <input
               type="checkbox"
               id="published"
               checked={formData.published}
               onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
             />
-            <label htmlFor="published" className="ml-2 block text-sm text-gray-900">
-              Published
-            </label>
+            <label htmlFor="published">Published</label>
           </div>
 
-          <div className="flex space-x-4">
-            <button
-              type="submit"
-              disabled={saving}
-              className="btn-primary flex-1 disabled:opacity-50"
-            >
+          <div className="form-actions">
+            <button type="submit" disabled={saving} className="btn btn-primary">
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="btn-secondary flex-1"
-            >
+            <button type="button" onClick={() => navigate(-1)} className="btn btn-secondary">
               Cancel
             </button>
           </div>
         </form>
 
-        {/* Delete Section */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <h3 className="text-lg font-semibold text-red-600 mb-4">Danger Zone</h3>
+        <div className="danger-zone">
+          <h3>Danger Zone</h3>
           {!showDeleteConfirm ? (
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
-            >
+            <button onClick={() => setShowDeleteConfirm(true)} className="btn btn-danger">
               Delete Post
             </button>
           ) : (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-800 mb-4">
-                Are you sure you want to delete this post? This action cannot be undone.
-              </p>
-              <div className="flex space-x-4">
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition"
-                >
+            <div className="delete-confirm">
+              <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+              <div className="delete-actions">
+                <button onClick={handleDelete} className="btn btn-danger">
                   Yes, Delete
                 </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
-                >
+                <button onClick={() => setShowDeleteConfirm(false)} className="btn btn-secondary">
                   Cancel
                 </button>
               </div>

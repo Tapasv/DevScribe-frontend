@@ -34,17 +34,15 @@ function CommentForm({ postId, onCommentAdded }) {
   };
 
   return (
-    <div className="card p-6">
-      <h3 className="text-2xl font-bold mb-6 text-gray-900">Leave a Comment</h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-            Name *
-          </label>
+    <div className="comment-form">
+      <h3>Leave a Comment</h3>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <div className="form-group">
+          <label htmlFor="name" className="form-label">Name *</label>
           <input
             type="text"
             id="name"
-            className="input-field"
+            className="form-input"
             value={formData.name}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
             required
@@ -52,14 +50,12 @@ function CommentForm({ postId, onCommentAdded }) {
           />
         </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-            Email *
-          </label>
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">Email *</label>
           <input
             type="email"
             id="email"
-            className="input-field"
+            className="form-input"
             value={formData.email}
             onChange={(e) => setFormData({...formData, email: e.target.value})}
             required
@@ -67,14 +63,12 @@ function CommentForm({ postId, onCommentAdded }) {
           />
         </div>
 
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-            Comment *
-          </label>
+        <div className="form-group">
+          <label htmlFor="content" className="form-label">Comment *</label>
           <textarea
             id="content"
             rows="5"
-            className="input-field"
+            className="form-textarea"
             value={formData.content}
             onChange={(e) => setFormData({...formData, content: e.target.value})}
             required
@@ -82,21 +76,13 @@ function CommentForm({ postId, onCommentAdded }) {
           />
         </div>
 
-        <button 
-          type="submit" 
-          className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
+        <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
           {loading ? 'Submitting...' : 'Submit Comment'}
         </button>
       </form>
 
       {status.message && (
-        <div className={`mt-4 p-4 rounded-lg ${
-          status.type === 'success' 
-            ? 'bg-green-100 text-green-700' 
-            : 'bg-red-100 text-red-700'
-        }`}>
+        <div className={status.type === 'success' ? 'form-success' : 'form-error'}>
           {status.message}
         </div>
       )}

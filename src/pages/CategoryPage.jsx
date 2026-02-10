@@ -31,39 +31,33 @@ function CategoryPage() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Category Header */}
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {category?.name || slug}
-        </h1>
+    <div className="container">
+      <div className="category-header">
+        <h1 className="category-title">{category?.name || slug}</h1>
         {category?.description && (
-          <p className="text-lg text-gray-600">{category.description}</p>
+          <p className="category-description">{category.description}</p>
         )}
-        <p className="text-gray-600 mt-2">
+        <p className="category-post-count">
           {posts.length} {posts.length === 1 ? 'post' : 'posts'}
         </p>
       </div>
 
-      {/* Posts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <div className="sidebar-grid">
+        <div>
           {posts.length > 0 ? (
-            <div className="space-y-6">
+            <div className="profile-posts">
               {posts.map(post => (
                 <PostCard key={post.id} post={post} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-600 text-lg">No posts found in this category.</p>
+            <div className="profile-empty">
+              <p>No posts found in this category.</p>
             </div>
           )}
         </div>
 
-        <div>
-          <Sidebar />
-        </div>
+        <Sidebar />
       </div>
     </div>
   );

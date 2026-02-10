@@ -55,69 +55,59 @@ function CreatePost() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="card p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Create New Post</h1>
+    <div className="create-post-container">
+      <div className="create-post-card">
+        <h1 className="create-post-title">Create New Post</h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
-          </div>
+          <div className="form-error">{error}</div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
-            </label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label className="form-label">Title *</label>
             <input
               type="text"
               required
-              className="input-field"
+              className="form-input"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Enter post title"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Excerpt *
-            </label>
+          <div className="form-group">
+            <label className="form-label">Excerpt *</label>
             <textarea
               required
               rows="3"
-              className="input-field"
+              className="form-textarea"
               value={formData.excerpt}
               onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
               placeholder="Brief summary of your post (max 300 characters)"
               maxLength="300"
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="char-count">
               {formData.excerpt.length}/300 characters
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Content *
-            </label>
+          <div className="form-group">
+            <label className="form-label">Content *</label>
             <textarea
               required
               rows="15"
-              className="input-field"
+              className="form-textarea"
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               placeholder="Write your post content here..."
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Category
-            </label>
+          <div className="form-group">
+            <label className="form-label">Category</label>
             <select
-              className="input-field"
+              className="form-select"
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
@@ -130,44 +120,31 @@ function CreatePost() {
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Featured Image
-            </label>
+          <div className="form-group">
+            <label className="form-label">Featured Image</label>
             <input
               type="file"
               accept="image/*"
-              className="input-field"
+              className="form-input"
               onChange={handleFileChange}
             />
           </div>
 
-          <div className="flex items-center">
+          <div className="form-checkbox">
             <input
               type="checkbox"
               id="published"
               checked={formData.published}
               onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
             />
-            <label htmlFor="published" className="ml-2 block text-sm text-gray-900">
-              Publish immediately
-            </label>
+            <label htmlFor="published">Publish immediately</label>
           </div>
 
-          <div className="flex space-x-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary flex-1 disabled:opacity-50"
-            >
+          <div className="form-actions">
+            <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? 'Creating...' : 'Create Post'}
             </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="btn-secondary flex-1"
-            >
+            <button type="button" onClick={() => navigate(-1)} className="btn btn-secondary">
               Cancel
             </button>
           </div>

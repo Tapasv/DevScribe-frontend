@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import * as api from '../services/api';
 
@@ -16,12 +16,61 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random()}`);
+  const isCheckingAuth = useRef(false);
 
+  // Check auth on mount
   useEffect(() => {
     checkAuth();
   }, []);
 
+  // Listen for storage changes from OTHER tabs only
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      // Only react to changes from OTHER tabs (e.key will be set)
+      if (!e.key) return;
+      
+      // If tokens were removed in another tab, don't affect this tab
+      if (e.key === 'access_token' || e.key === 'refresh_token') {
+        // Do nothing - each tab maintains its own session
+        return;
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Auto-refresh token before expiry
+  useEffect(() => {
+    if (!user) return;
+
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode(token);
+      const expiresIn = decoded.exp * 1000 - Date.now();
+      
+      // Refresh 5 minutes before expiry
+      const refreshTime = expiresIn - 5 * 60 * 1000;
+      
+      if (refreshTime > 0) {
+        const timer = setTimeout(() => {
+          refreshToken();
+        }, refreshTime);
+
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.error('Error scheduling token refresh:', error);
+    }
+  }, [user]);
+
   const checkAuth = async () => {
+    if (isCheckingAuth.current) return;
+    isCheckingAuth.current = true;
+
     const token = localStorage.getItem('access_token');
     if (token) {
       try {
@@ -39,10 +88,13 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        logout();
+        // Don't logout, just clear state for this tab
+        setUser(null);
+        setProfile(null);
       }
     }
     setLoading(false);
+    isCheckingAuth.current = false;
   };
 
   const refreshToken = async () => {
@@ -51,9 +103,16 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await api.refreshAccessToken(refresh);
         localStorage.setItem('access_token', response.data.access);
-        await checkAuth();
+        
+        // Fetch profile again
+        const profileRes = await api.getProfile();
+        setUser(profileRes.data.user);
+        setProfile(profileRes.data);
       } catch (error) {
-        logout();
+        console.error('Token refresh failed:', error);
+        // Clear this tab's session
+        setUser(null);
+        setProfile(null);
       }
     }
   };
@@ -63,6 +122,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.login(username, password);
       const { user, profile, tokens } = response.data;
       
+      // Store tokens - this won't affect other tabs
       localStorage.setItem('access_token', tokens.access);
       localStorage.setItem('refresh_token', tokens.refresh);
       
@@ -107,6 +167,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Only clear tokens and state for THIS tab
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       setUser(null);
@@ -118,6 +179,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.updateProfile(profileData);
       setProfile(response.data);
+      setUser(response.data.user);
       return { success: true };
     } catch (error) {
       return { 
@@ -137,6 +199,7 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     isAuthenticated: !!user,
     isAuthor: profile?.role === 'author',
+    sessionId, // Unique ID for this tab session
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

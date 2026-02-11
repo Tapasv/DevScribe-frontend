@@ -12,6 +12,7 @@ import EditPost from './pages/EditPost';
 import NotFound from './pages/NotFound';
 import { useAuth } from './contexts/AuthContext';
 import LoadingSpinner from './components/LoadingSpinner';
+import { Analytics } from "@vercel/analytics/next"
 
 function App() {
   const { loading } = useAuth();
@@ -36,6 +37,7 @@ function App() {
             <Route path="/edit-post/:slug" element={<EditPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Analytics />
         </main>
         <Footer />
       </div>

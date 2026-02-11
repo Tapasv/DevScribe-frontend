@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { getCategories } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
-// HARD-CODED BACKEND BASE
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+// HARD-CODED BACKEND BASE.
+const BASE_URL = 'https://devscribe-backend-a4ot.onrender.com/admin/';
 
 function Header() {
   const [categories, setCategories] = useState([]);
@@ -60,7 +60,7 @@ function Header() {
           )}
 
           {/* Admin */}
-          <a href={`${BASE_URL}/admin`} target="_blank" rel="noreferrer">
+          <a href={`${BASE_URL}`} target="_blank" rel="noreferrer">
             Admin
           </a>
         </div>
